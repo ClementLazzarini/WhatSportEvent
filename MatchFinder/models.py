@@ -36,6 +36,14 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    external_api_id = models.CharField(
+        max_length=255, 
+        unique=True, 
+        null=True, 
+        blank=True, 
+        help_text="ID unique de l'événement provenant de l'API"
+    )
+
     class Meta:
         verbose_name = "Événement"
         verbose_name_plural = "Événements"
