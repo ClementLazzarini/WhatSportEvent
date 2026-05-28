@@ -20,27 +20,26 @@
     <header class="bg-indigo-600 text-white py-16 px-6 text-center">
       <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Ne ratez aucun match.</h1>
       <p class="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-8">
-        Découvrez tous les événements sportifs locaux autour de vous ce week-end. Du stade pro au terrain de quartier.
+        Découvrez tous les événements sportifs locaux autour de vous. Du stade pro au terrain de quartier.
       </p>
       
       <div class="flex flex-wrap justify-center gap-3">
         <button class="px-5 py-2 rounded-full bg-white text-indigo-600 font-semibold shadow hover:bg-gray-100 transition">Tous</button>
-        <button class="px-5 py-2 rounded-full bg-indigo-500 text-white font-medium hover:bg-indigo-400 transition">Rugby</button>
         <button class="px-5 py-2 rounded-full bg-indigo-500 text-white font-medium hover:bg-indigo-400 transition">Football</button>
-        <button class="px-5 py-2 rounded-full bg-indigo-500 text-white font-medium hover:bg-indigo-400 transition">Baseball</button>
+        <button class="px-5 py-2 rounded-full bg-indigo-500 text-white font-medium hover:bg-indigo-400 transition">Rugby</button>
       </div>
     </header>
 
     <main class="container mx-auto px-6 py-12 flex-grow">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">À venir près de chez vous</h2>
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Événements disponibles ({{ events|length }})</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         {% for event in events %}
         <article class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col">
           <div class="flex justify-between items-start mb-4">
-            <span class="text-xs font-bold px-3 py-1 rounded-full {{ event.tag_color }}">
-              {{ event.sport }}
+            <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-50 text-indigo-700">
+              {{ event.sport.name }}
             </span>
             <span class="text-sm font-semibold text-gray-500">{{ event.price }}</span>
           </div>
@@ -50,16 +49,16 @@
           <div class="mt-auto space-y-2 text-sm text-gray-600 pt-4">
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-              <span>{{ event.date }}</span>
+              <span>{{ event.start_time|date:"d F Y à H:i" }}</span>
             </div>
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              <span>{{ event.venue }}</span>
+              <span>{{ event.venue_name }}, {{ event.city }}</span>
             </div>
           </div>
         </article>
         {% empty %}
-        <p class="text-gray-500 italic col-span-full">Aucun événement trouvé pour le moment.</p>
+        <p class="text-gray-500 italic col-span-full">Aucun événement trouvé dans la base de données. Lance la commande fetch_events !</p>
         {% endfor %}
 
       </div>
