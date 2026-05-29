@@ -1,0 +1,25 @@
+{% for event in events %}
+<article class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition flex flex-col">
+    <div class="flex justify-between items-start mb-4">
+    <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-50 text-indigo-700">
+        {{ event.sport.name }}
+    </span>
+    <span class="text-sm font-semibold text-gray-500">{{ event.price }}</span>
+    </div>
+    
+    <h3 class="text-xl font-bold text-gray-900 mb-2 leading-tight">{{ event.title }}</h3>
+    
+    <div class="mt-auto space-y-2 text-sm text-gray-600 pt-4">
+    <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <span>{{ event.start_time|date:"d F Y à H:i" }}</span>
+    </div>
+    <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <span>{{ event.venue_name }}, {{ event.city }}</span>
+    </div>
+    </div>
+</article>
+{% empty %}
+<p class="text-gray-500 italic col-span-full">Aucun événement trouvé pour cette recherche.</p>
+{% endfor %}
