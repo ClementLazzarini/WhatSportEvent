@@ -24,22 +24,57 @@
         Découvrez tous les événements sportifs locaux autour de vous. Du stade pro au terrain de quartier.
       </p>
       
-      <form class="max-w-md mx-auto bg-white rounded-full flex shadow-lg overflow-hidden border-2 border-transparent focus-within:border-indigo-300 transition">
+      <form id="search-form" class="max-w-2xl mx-auto">
         
-        <input 
-            type="text" 
-            name="city" 
-            value="{{ search_city }}" 
-            placeholder="Chercher une ville..." 
-            class="flex-grow px-6 py-3 text-gray-700 focus:outline-none border-none focus:ring-0 bg-transparent"
-            hx-get="{% url 'home' %}"
-            hx-target="#event-results"
-            hx-trigger="keyup changed delay:500ms, search"
-        >
-        <button type="submit" class="bg-indigo-500 text-white px-6 py-3 font-semibold hover:bg-indigo-400 transition" disabled>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        </button>
+        <div class="flex flex-wrap justify-center gap-3 mb-8">
+          
+          <label class="cursor-pointer">
+            <input type="radio" name="sport" value="" class="peer hidden"
+                   hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form"
+                   {% if not search_sport %}checked{% endif %}>
+            <div class="px-5 py-2 rounded-full font-semibold transition peer-checked:bg-white peer-checked:text-indigo-600 peer-checked:shadow bg-indigo-500 text-white hover:bg-indigo-400">
+              Tous
+            </div>
+          </label>
+
+          {% for sport in sports %}
+          <label class="cursor-pointer">
+            <input type="radio" name="sport" value="{{ sport.slug }}" class="peer hidden"
+                   hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form"
+                   {% if search_sport == sport.slug %}checked{% endif %}>
+            <div class="px-5 py-2 rounded-full font-semibold transition peer-checked:bg-white peer-checked:text-indigo-600 peer-checked:shadow bg-indigo-500 text-white hover:bg-indigo-400">
+              {{ sport.name }}
+            </div>
+          </label>
+          {% endfor %}
+
+        </div>
+
+        <div class="max-w-md mx-auto bg-white rounded-full flex shadow-lg overflow-hidden border-2 border-transparent focus-within:border-indigo-300 transition">
+          <input 
+              type="text" 
+              name="city" 
+              value="{{ search_city }}" 
+              placeholder="Chercher une ville (ex: Toulouse)..." 
+              class="flex-grow px-6 py-3 text-gray-700 focus:outline-none border-none focus:ring-0 bg-transparent"
+              hx-get="{% url 'home' %}"
+              hx-target="#event-results"
+              hx-trigger="keyup changed delay:500ms, search"
+              hx-include="#search-form"
+          >
+          <button type="button" class="bg-indigo-500 text-white px-6 py-3 font-semibold hover:bg-indigo-400 transition" disabled>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </button>
+        </div>
       </form>
+
+      {% if search_city or search_sport %}
+      <div class="mt-4">
+        <a href="{% url 'home' %}" class="text-indigo-200 hover:text-white text-sm underline transition">
+          Effacer les filtres
+        </a>
+      </div>
+      {% endif %}
     </header>
 
     <main class="container mx-auto px-6 py-12 flex-grow">
