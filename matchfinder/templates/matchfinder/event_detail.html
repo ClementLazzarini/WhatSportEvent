@@ -1,0 +1,90 @@
+{% load static %}
+{% load tailwind_tags %}
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ event.title }} - matchfinder</title>
+    {% tailwind_css %}
+  </head>
+  <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+    
+    <nav class="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
+      <a href="{% url 'home' %}" class="text-2xl font-black text-indigo-600 tracking-tight">matchfinder</a>
+      <a href="{% url 'home' %}" class="text-sm font-medium text-gray-600 hover:text-indigo-600 transition">
+        &larr; Retour aux événements
+      </a>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12 flex-grow max-w-3xl">
+      
+      <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        
+        <div class="bg-indigo-600 p-8 text-white">
+          <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-500 bg-opacity-50 text-indigo-100">
+            {{ event.sport.name }}
+          </span>
+          <h1 class="text-3xl font-extrabold mt-4 leading-tight">{{ event.title }}</h1>
+        </div>
+
+        <div class="p-8 space-y-6">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-gray-100">
+            
+            <div class="flex items-start gap-3">
+              <div class="p-3 bg-gray-50 rounded-xl text-gray-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Date et heure</h4>
+                <p class="text-base font-semibold text-gray-900 mt-0.5">{{ event.start_time|date:"l d F Y"|capfirst }}</p>
+                <p class="text-sm text-gray-500">À {{ event.start_time|date:"H:i" }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="p-3 bg-gray-50 rounded-xl text-gray-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Lieu</h4>
+                <p class="text-base font-semibold text-gray-900 mt-0.5">{{ event.venue_name }}</p>
+                <p class="text-sm text-gray-500">{{ event.city }}</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">À propos de l'événement</h3>
+            <p class="text-gray-600 leading-relaxed">
+              {% if event.description %}
+                {{ event.description }}
+              {% else %}
+                Venez assister à cette rencontre d'exception de {{ event.sport.name|lower }} opposant les deux équipes. Un grand moment de sport local en perspective !
+              {% endif %}
+            </p>
+          </div>
+
+          <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Tarif indicatif</span>
+              <span class="text-xl font-black text-gray-900">{{ event.price }}</span>
+            </div>
+            
+            <a href="#" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold text-center hover:bg-indigo-700 shadow-md hover:shadow-lg transition">
+              Réserver des places
+            </a>
+          </div>
+
+        </div>
+      </article>
+    </main>
+
+    <footer class="bg-white border-t py-8 text-center text-sm text-gray-500 mt-auto">
+      &copy; 2026 matchfinder. Tous droits réservés.
+    </footer>
+    
+  </body>
+</html>

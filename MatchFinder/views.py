@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Event, Sport
 
 def home_view(request):
@@ -31,3 +31,10 @@ def home_view(request):
         return render(request, 'matchfinder/partials/event_list.html', context)
     
     return render(request, 'matchfinder/index.html', context)
+
+
+def event_detail_view(request, event_id):
+    # On récupère l'événement précis ou on renvoie une erreur 404 si introuvable
+    event = get_object_or_404(Event.objects.select_related('sport'), id=event_id)
+    
+    return render(request, 'matchfinder/event_detail.html', {'event': event})
