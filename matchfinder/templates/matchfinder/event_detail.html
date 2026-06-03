@@ -1,90 +1,166 @@
 {% load static %}
 {% load tailwind_tags %}
 <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html class="dark" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>{{ event.title }} - matchfinder</title>
-    {% tailwind_css %}
-  </head>
-  <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
     
-    <nav class="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
-      <a href="{% url 'home' %}" class="text-2xl font-black text-indigo-600 tracking-tight">matchfinder</a>
-      <a href="{% url 'home' %}" class="text-sm font-medium text-gray-600 hover:text-indigo-600 transition">
-        &larr; Retour aux événements
-      </a>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+    
+    {% tailwind_css %}
+
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes shimmer { 100% { transform: translateX(100%); } }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased overflow-x-hidden selection:bg-primary/30">
+
+    <nav class="bg-surface/80 backdrop-blur-md fixed top-0 w-full z-50 shadow-sm flex justify-between items-center px-container-margin-desktop h-16 max-w-full border-b border-white/5">
+        <a class="font-headline-md text-[24px] font-bold tracking-tighter text-primary hover:scale-95 duration-200" href="{% url 'home' %}">
+            matchfinder
+        </a>
+        <div class="hidden md:flex items-center space-x-8">
+            <a class="text-primary border-b-2 border-primary pb-1 font-body-md hover:text-primary transition-colors" href="{% url 'home' %}">Découvrir</a>
+            <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="#">Carte</a>
+            <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="#">Mes Matchs</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            <a href="{% url 'home' %}" class="bg-surface-container text-on-surface px-6 py-2 rounded-full font-label-bold text-sm border border-white/10 hover:bg-white/5 transition-all">
+                &larr; Retour
+            </a>
+        </div>
     </nav>
 
-    <main class="container mx-auto px-6 py-12 flex-grow max-w-3xl">
-      
-      <article class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        
-        <div class="bg-indigo-600 p-8 text-white">
-          <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-500 bg-opacity-50 text-indigo-100">
-            {{ event.sport.name }}
-          </span>
-          <h1 class="text-3xl font-extrabold mt-4 leading-tight">{{ event.title }}</h1>
-        </div>
-
-        <div class="p-8 space-y-6">
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-gray-100">
+    <main class="pt-16 pb-section-gap">
+        <section class="relative w-full h-[400px] md:h-[512px] overflow-hidden group">
+            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105" style="background-image: url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');"></div>
             
-            <div class="flex items-start gap-3">
-              <div class="p-3 bg-gray-50 rounded-xl text-gray-500">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Date et heure</h4>
-                <p class="text-base font-semibold text-gray-900 mt-0.5">{{ event.start_time|date:"l d F Y"|capfirst }}</p>
-                <p class="text-sm text-gray-500">À {{ event.start_time|date:"H:i" }}</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-3">
-              <div class="p-3 bg-gray-50 rounded-xl text-gray-500">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Lieu</h4>
-                <p class="text-base font-semibold text-gray-900 mt-0.5">{{ event.venue_name }}</p>
-                <p class="text-sm text-gray-500">{{ event.city }}</p>
-              </div>
-            </div>
-
-          </div>
-
-          <div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">À propos de l'événement</h3>
-            <p class="text-gray-600 leading-relaxed">
-              {% if event.description %}
-                {{ event.description }}
-              {% else %}
-                Venez assister à cette rencontre d'exception de {{ event.sport.name|lower }} opposant les deux équipes. Un grand moment de sport local en perspective !
-              {% endif %}
-            </p>
-          </div>
-
-          <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Tarif indicatif</span>
-              <span class="text-xl font-black text-gray-900">{{ event.price }}</span>
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
             
-            <a href="#" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold text-center hover:bg-indigo-700 shadow-md hover:shadow-lg transition">
-              Réserver des places
-            </a>
-          </div>
+            <div class="absolute top-8 left-container-margin-mobile md:left-container-margin-desktop z-10">
+                <div class="bg-primary/10 backdrop-blur-md border border-primary/20 px-4 py-2 rounded-lg flex flex-col items-center justify-center shadow-lg">
+                    <span class="font-label-bold text-primary uppercase tracking-wider text-xs">{{ event.start_time|date:"M" }}</span>
+                    <span class="font-headline-md text-[24px] text-on-surface leading-none">{{ event.start_time|date:"d" }}</span>
+                </div>
+            </div>
 
-        </div>
-      </article>
+            <div class="absolute bottom-8 left-container-margin-mobile md:left-container-margin-desktop z-10 max-w-3xl">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-label-bold text-[12px] uppercase tracking-wider border border-primary/20">{{ event.sport.name }}</span>
+                </div>
+                <h1 class="font-headline-xl text-[32px] md:text-[48px] font-extrabold text-on-surface mb-2 drop-shadow-md">{{ event.title }}</h1>
+                <p class="font-body-lg text-[18px] text-on-surface-variant flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary">location_on</span>
+                    {{ event.venue_name }}, {{ event.city }}
+                </p>
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-container-margin-mobile md:px-container-margin-desktop mt-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+                
+                <div class="md:col-span-8 space-y-10">
+                    <div class="flex flex-wrap items-center gap-8 py-6 border-y border-white/5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined icon-fill">calendar_today</span>
+                            </div>
+                            <div>
+                                <p class="font-label-md text-on-surface-variant text-sm">Date & Heure</p>
+                                <p class="font-body-md text-on-surface font-semibold">{{ event.start_time|date:"d F Y • H:i" }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined icon-fill">stadium</span>
+                            </div>
+                            <div>
+                                <p class="font-label-md text-on-surface-variant text-sm">Lieu</p>
+                                <p class="font-body-md text-on-surface font-semibold">{{ event.venue_name }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="font-headline-lg text-[28px] font-bold text-on-surface mb-4">À propos de l'événement</h2>
+                        <div class="prose prose-invert max-w-none font-body-md text-on-surface-variant leading-relaxed space-y-4">
+                            {% if event.description %}
+                                <p>{{ event.description }}</p>
+                            {% else %}
+                                <p>Venez assister à cette rencontre d'exception de {{ event.sport.name|lower }} opposant les deux équipes. Un grand moment de sport local en perspective ! Les portes ouvrent généralement 1h avant le coup d'envoi.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-headline-md text-[24px] font-bold text-on-surface mb-4">Localisation</h3>
+                        <div class="bg-surface-container rounded-xl overflow-hidden border border-white/5 group relative">
+                            <div class="w-full h-64 bg-surface-container-high relative overflow-hidden">
+                                <div class="absolute inset-0 bg-surface-container-highest opacity-50"></div>
+                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(184,195,255,0.3)] animate-pulse">
+                                        <span class="material-symbols-outlined text-on-primary icon-fill">stadium</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 flex justify-between items-center bg-surface-container">
+                                <div>
+                                    <p class="font-body-md text-on-surface font-semibold">{{ event.venue_name }}</p>
+                                    <p class="font-label-md text-on-surface-variant">{{ event.city }}</p>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ event.venue_name }} {{ event.city }}" target="_blank" class="text-primary font-label-bold text-sm hover:text-white transition-colors flex items-center gap-1">
+                                    Voir l'itinéraire <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-4 mt-8 md:mt-0">
+                    <div class="sticky top-24 bg-surface-container border border-white/5 rounded-xl p-6 shadow-2xl relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-secondary-container/20 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-end mb-8">
+                                <div>
+                                    <p class="font-label-md text-on-surface-variant text-sm mb-1">Tarif indicatif</p>
+                                    <p class="font-headline-lg text-[32px] font-bold text-on-surface leading-none">{{ event.price }}</p>
+                                </div>
+                            </div>
+
+                            <button class="w-full bg-secondary-container text-white py-4 rounded-lg font-headline-md text-[18px] font-bold hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(255,94,7,0.3)] transition-all active:scale-95 duration-200 mb-4 flex justify-center items-center gap-2">
+                                Voir la billetterie
+                            </button>
+
+                            <div class="flex gap-4">
+                                <button class="flex-1 bg-transparent border-2 border-inverse-primary text-primary py-3 rounded-lg font-label-bold text-sm hover:bg-inverse-primary/10 transition-colors flex justify-center items-center gap-2">
+                                    <span class="material-symbols-outlined">share</span> Partager
+                                </button>
+                                <button class="w-12 h-12 bg-surface-container-high border border-white/5 rounded-lg flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors">
+                                    <span class="material-symbols-outlined">favorite</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <footer class="bg-white border-t py-8 text-center text-sm text-gray-500 mt-auto">
-      &copy; 2026 matchfinder. Tous droits réservés.
+    <footer class="bg-surface-container-lowest w-full py-12 px-container-margin-desktop border-t border-white/5">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-7xl mx-auto">
+            <div class="col-span-1 md:col-span-2 flex flex-col justify-between h-full space-y-4">
+                <span class="font-headline-md text-[24px] font-bold text-on-surface">matchfinder</span>
+                <p class="font-body-md text-on-surface-variant">© 2026 matchfinder. Tous droits réservés.</p>
+            </div>
+        </div>
     </footer>
-    
-  </body>
+</body>
 </html>

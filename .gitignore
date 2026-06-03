@@ -38,3 +38,6 @@ logs/
 .continue/
 
 DATA/
+
+
+node_modules/
