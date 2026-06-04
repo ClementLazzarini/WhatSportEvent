@@ -1,95 +1,136 @@
 {% load static %}
 {% load tailwind_tags %}
 <!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>matchfinder - Le sport autour de vous</title>
-    {% tailwind_css %}
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-  </head>
-  <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+<html class="dark" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>matchfinder - Découvrez le sport local</title>
     
-    <nav class="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
-      <div class="text-2xl font-black text-indigo-600 tracking-tight">matchfinder</div>
-      <a href="#" class="text-sm font-medium text-gray-600 hover:text-indigo-600 transition">
-        Se connecter
-      </a>
-    </nav>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+    
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    {% tailwind_css %}
+    
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary/30">
 
-    <header class="bg-indigo-600 text-white py-16 px-6 text-center">
-      <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Ne ratez aucun match.</h1>
-      <p class="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-8">
-        Découvrez tous les événements sportifs locaux autour de vous. Du stade pro au terrain de quartier.
-      </p>
-      
-      <form id="search-form" class="max-w-2xl mx-auto">
-        
-        <div class="flex flex-wrap justify-center gap-3 mb-8">
-          
-          <label class="cursor-pointer">
-            <input type="radio" name="sport" value="" class="peer hidden"
-                   hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form"
-                   {% if not search_sport %}checked{% endif %}>
-            <div class="px-5 py-2 rounded-full font-semibold transition peer-checked:bg-white peer-checked:text-indigo-600 peer-checked:shadow bg-indigo-500 text-white hover:bg-indigo-400">
-              Tous
+    <header class="bg-surface/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-white/5 shadow-sm transition-all duration-300">
+        <div class="flex justify-between items-center px-container-margin-desktop h-16 w-full max-w-full mx-auto">
+            <a href="{% url 'home' %}" class="flex items-center gap-2 hover:scale-95 transition-transform">
+                <span class="material-symbols-outlined icon-fill text-primary text-2xl">speed</span>
+                <span class="font-headline-md font-bold tracking-tighter text-primary">matchfinder</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="text-primary border-b-2 border-primary pb-1 font-body-md hover:text-primary transition-colors" href="{% url 'home' %}">Découvrir</a>
+                <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="#">Carte</a>
+                <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="#">Mes Matchs</a>
+            </nav>
+            
+            <div class="flex items-center gap-4">
+                <button class="text-on-surface hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">person</span>
+                </button>
+                <button class="hidden md:block bg-secondary-container text-white px-6 py-2 rounded-full font-label-bold hover:scale-105 transition-transform active:scale-95">
+                    Connexion
+                </button>
             </div>
-          </label>
-
-          {% for sport in sports %}
-          <label class="cursor-pointer">
-            <input type="radio" name="sport" value="{{ sport.slug }}" class="peer hidden"
-                   hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form"
-                   {% if search_sport == sport.slug %}checked{% endif %}>
-            <div class="px-5 py-2 rounded-full font-semibold transition peer-checked:bg-white peer-checked:text-indigo-600 peer-checked:shadow bg-indigo-500 text-white hover:bg-indigo-400">
-              {{ sport.name }}
-            </div>
-          </label>
-          {% endfor %}
-
         </div>
-
-        <div class="max-w-md mx-auto bg-white rounded-full flex shadow-lg overflow-hidden border-2 border-transparent focus-within:border-indigo-300 transition">
-          <input 
-              type="text" 
-              name="city" 
-              value="{{ search_city }}" 
-              placeholder="Chercher une ville (ex: Toulouse)..." 
-              class="flex-grow px-6 py-3 text-gray-700 focus:outline-none border-none focus:ring-0 bg-transparent"
-              hx-get="{% url 'home' %}"
-              hx-target="#event-results"
-              hx-trigger="keyup changed delay:500ms, search"
-              hx-include="#search-form"
-          >
-          <button type="button" class="bg-indigo-500 text-white px-6 py-3 font-semibold hover:bg-indigo-400 transition" disabled>
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          </button>
-        </div>
-      </form>
-
-      {% if search_city or search_sport %}
-      <div class="mt-4">
-        <a href="{% url 'home' %}" class="text-indigo-200 hover:text-white text-sm underline transition">
-          Effacer les filtres
-        </a>
-      </div>
-      {% endif %}
     </header>
 
-    <main class="container mx-auto px-6 py-12 flex-grow">
-      <h2 class="text-2xl font-bold text-gray-900 mb-6">Événements disponibles ({{ events|length }})</h2>
+    <main class="flex-grow pt-16">
+        
+        <form id="search-form">
+            
+            <section class="relative w-full min-h-[500px] flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 w-full h-full bg-surface-container-highest" style="background-image: url('https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); background-size: cover; background-position: center;"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+                
+                <div class="relative z-10 w-full max-w-5xl px-container-margin-mobile md:px-container-margin-desktop flex flex-col items-center text-center mt-16">
+                    <h1 class="font-headline-xl text-[40px] md:text-[56px] text-on-surface mb-6 drop-shadow-lg leading-tight">Vivez le sport<br><span class="text-primary">en direct.</span></h1>
+                    <p class="font-body-lg text-on-surface-variant max-w-2xl mb-12">Découvrez les matchs, tournois locaux et événements sportifs qui se déroulent autour de vous.</p>
+                    
+                    <div class="w-full max-w-xl bg-surface-container/90 backdrop-blur-md rounded-full p-2 flex flex-col md:flex-row items-center border border-surface-bright shadow-[0_0_30px_rgba(46,91,255,0.15)] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+                        <div class="flex-grow flex items-center px-4 w-full h-12">
+                            <span class="material-symbols-outlined text-primary mr-3">location_on</span>
+                            <input 
+                                type="text" 
+                                name="city" 
+                                value="{{ search_city }}"
+                                hx-get="{% url 'home' %}"
+                                hx-target="#event-results"
+                                hx-trigger="keyup changed delay:500ms, search"
+                                hx-include="#search-form"
+                                class="w-full bg-transparent border-none text-on-surface font-body-md focus:ring-0 focus:outline-none placeholder:text-on-surface-variant/50" 
+                                placeholder="Dans quelle ville cherchez-vous ? (ex: Toulouse)"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-      <div id="event-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-        {% include 'matchfinder/partials/event_list.html' %}
-        
-      </div>
+            <section class="py-8 px-container-margin-mobile md:px-container-margin-desktop max-w-7xl mx-auto border-b border-surface-container-low">
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <span class="font-label-bold text-on-surface-variant uppercase mr-4 tracking-widest hidden md:block">Explorer:</span>
+                    
+                    <label class="cursor-pointer">
+                        <input type="radio" name="sport" value="" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if not search_sport %}checked{% endif %}>
+                        <div class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-surface-bright bg-surface-container text-on-surface-variant peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary/20 hover:bg-surface-bright transition-colors">
+                            <span class="font-label-bold uppercase">Tous</span>
+                        </div>
+                    </label>
+
+                    {% for sport in sports %}
+                    <label class="cursor-pointer">
+                        <input type="radio" name="sport" value="{{ sport.slug }}" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if search_sport == sport.slug %}checked{% endif %}>
+                        <div class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-surface-bright bg-surface-container text-on-surface-variant peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary/20 hover:bg-surface-bright transition-colors">
+                            <span class="font-label-bold uppercase">{{ sport.name }}</span>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+            </section>
+        </form>
+
+        <section class="py-16 px-container-margin-mobile md:px-container-margin-desktop max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="font-headline-lg text-[32px] text-on-surface">Événements à venir</h2>
+                    <p class="font-body-md text-on-surface-variant mt-2">Les prochains matchs disponibles dans votre secteur.</p>
+                </div>
+            </div>
+            
+            <div id="event-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% include 'matchfinder/partials/event_list.html' %}
+            </div>
+        </section>
+
     </main>
 
-    <footer class="bg-white border-t py-8 text-center text-sm text-gray-500 mt-auto">
-      &copy; 2026 matchfinder. Tous droits réservés.
+    <footer class="bg-surface-container-lowest w-full py-16 px-container-margin-desktop mt-auto border-t border-surface-container">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            <div class="flex flex-col gap-4 col-span-1 md:col-span-2">
+                <span class="font-headline-md font-bold text-on-surface">matchfinder</span>
+                <p class="font-body-md text-on-surface-variant max-w-sm">La meilleure plateforme pour trouver et vivre l'énergie du sport local.</p>
+                <p class="font-body-md text-on-surface-variant mt-auto pt-8">© 2026 matchfinder. Tous droits réservés.</p>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h4 class="font-label-bold text-on-surface uppercase tracking-wider mb-2">Plateforme</h4>
+                <a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">À propos</a>
+            </div>
+            <div class="flex flex-col gap-4">
+                <h4 class="font-label-bold text-on-surface uppercase tracking-wider mb-2">Légal</h4>
+                <a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Conditions d'utilisation</a>
+                <a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+            </div>
+        </div>
     </footer>
-    
-  </body>
+</body>
 </html>
