@@ -92,6 +92,8 @@ class Command(BaseCommand):
                         home_team = teams.get("home", {}).get("name") or "Équipe Domicile"
                         away_team = teams.get("away", {}).get("name") or "Équipe Extérieur"
                         title = f"{home_team} vs {away_team}"
+                        league_info = item.get("league", {})
+                        league_name = league_info.get("name") or "Compétition"
 
                         # 3. Enregistrement en base
                         event, created = Event.objects.update_or_create(
@@ -99,6 +101,7 @@ class Command(BaseCommand):
                             defaults={
                                 'title': title,
                                 'sport': sport_obj,
+                                'league_name': league_name,
                                 'start_time': start_time,
                                 'venue_name': venue_name,
                                 'city': venue_city,

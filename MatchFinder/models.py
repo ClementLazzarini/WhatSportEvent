@@ -19,6 +19,7 @@ class Event(models.Model):
     title = models.CharField(max_length=200, verbose_name="Titre de l'événement")
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE, related_name='events')
     description = models.TextField(blank=True, verbose_name="Description")
+    league_name = models.CharField(max_length=100, blank=True, verbose_name="Compétition (ex: Ligue 1)")
     
     # Dates et heures
     start_time = models.DateTimeField(verbose_name="Début")

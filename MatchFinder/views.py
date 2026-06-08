@@ -5,6 +5,7 @@ def home_view(request):
     # 1. On écoute la ville ET le sport dans l'URL
     search_city = request.GET.get('city', '')
     search_sport = request.GET.get('sport', '')
+    search_league = request.GET.get('league', '')
 
     # 2. Requêtes de base
     events = Event.objects.select_related('sport').order_by('start_time')
@@ -17,6 +18,11 @@ def home_view(request):
     if search_sport:
         events = events.filter(sport__slug=search_sport)
 
+    if search_league:
+        events = events.filter(league_name=search_league)
+    
+    leagues = Event.objects.exclude(league_name='').values_list('league_name', flat=True).distinct().order_by('league_name')
+
     events = events[:12]
     
     # 4. On passe tout au contexte
@@ -24,7 +30,9 @@ def home_view(request):
         'events': events,
         'search_city': search_city,
         'search_sport': search_sport,
+        'search_league': search_league,
         'sports': sports,
+        'leagues': leagues,
     }
 
     if request.headers.get('HX-Request'):
@@ -34,7 +42,6 @@ def home_view(request):
 
 
 def event_detail_view(request, event_id):
-    # On récupère l'événement précis ou on renvoie une erreur 404 si introuvable
     event = get_object_or_404(Event.objects.select_related('sport'), id=event_id)
     
     return render(request, 'matchfinder/event_detail.html', {'event': event})

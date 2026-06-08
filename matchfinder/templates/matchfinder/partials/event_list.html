@@ -9,6 +9,11 @@
         <div class="bg-surface/80 backdrop-blur-md px-3 py-1.5 rounded border border-white/10 shrink-0">
             <span class="font-label-bold text-xs text-primary uppercase tracking-wider">{{ event.sport.name }}</span>
         </div>
+        {% if event.league_name %}
+        <div class="bg-surface/80 backdrop-blur-md px-3 py-1.5 rounded border border-white/10 shrink-0">
+            <span class="font-label-bold text-xs text-secondary-container uppercase tracking-wider">{{ event.league_name }}</span>
+        </div>
+        {% endif %}
         <div class="bg-surface/80 backdrop-blur-md px-3 py-1.5 rounded border border-white/10 shrink-0">
             <span class="font-label-bold text-xs text-on-surface uppercase">{{ event.start_time|date:"d M, H:i" }}</span>
         </div>
