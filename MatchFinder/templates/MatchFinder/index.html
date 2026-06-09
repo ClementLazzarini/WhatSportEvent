@@ -90,6 +90,7 @@
                     <label class="cursor-pointer">
                         <input type="radio" name="sport" value="{{ sport.slug }}" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if search_sport == sport.slug %}checked{% endif %}>
                         <div class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-surface-bright bg-surface-container text-on-surface-variant peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary/20 hover:bg-surface-bright transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">{{ sport.icon_class }}</span>
                             <span class="font-label-bold uppercase">{{ sport.name }}</span>
                         </div>
                     </label>
