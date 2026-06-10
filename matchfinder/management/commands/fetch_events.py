@@ -79,13 +79,20 @@ class Command(BaseCommand):
                         else:
                             start_time = raw_date
 
+                        # Gestion du stade
                         venue_data = fixture_data.get("venue") or {}
                         if isinstance(venue_data, str):
                             venue_name = venue_data
                             venue_city = "Ville inconnue"
+                            venue_image = ""
                         else:
                             venue_name = venue_data.get("name") or "Stade à définir"
                             venue_city = venue_data.get("city") or "Ville inconnue"
+                            venue_id = venue_data.get("id")
+                            if venue_id:
+                                venue_image = f"https://media.api-sports.io/{sport_data['slug']}/venues/{venue_id}.png"
+                            else:
+                                venue_image = ""
 
                         # Gestion des équipes
                         teams = item.get("teams", {})
@@ -102,6 +109,7 @@ class Command(BaseCommand):
                                 'title': title,
                                 'sport': sport_obj,
                                 'league_name': league_name,
+                                'venue_image': venue_image,
                                 'start_time': start_time,
                                 'venue_name': venue_name,
                                 'city': venue_city,

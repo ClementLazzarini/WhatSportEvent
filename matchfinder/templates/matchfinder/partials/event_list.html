@@ -1,7 +1,10 @@
 {% for event in events %}
 <a href="{% url 'event_detail' event.id %}" class="group relative rounded-xl overflow-hidden bg-surface-container border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col justify-between h-[280px] sm:h-[300px] md:h-[320px] shadow-lg p-5">
     
-    <img alt="{{ event.sport.name }}" class="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-700" src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"/>
+    <img alt="{{ event.venue_name }}" 
+         class="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-700" 
+         src="{{ event.venue_image }}"
+         onerror="this.onerror=null; this.src='{% if event.sport.name == 'Football' %}https://images.unsplash.com/photo-1518605368461-1ee7c5320b22?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80{% elif event.sport.name == 'Rugby' %}https://images.unsplash.com/photo-1589201174354-9781b0a8eb1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80{% else %}https://images.unsplash.com/photo-1505666287802-931dc83948e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80{% endif %}';"/>
     
     <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent opacity-90 group-hover:opacity-100 transition-opacity z-0"></div>
 

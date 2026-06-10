@@ -20,6 +20,7 @@ class Event(models.Model):
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE, related_name='events')
     description = models.TextField(blank=True, verbose_name="Description")
     league_name = models.CharField(max_length=100, blank=True, verbose_name="Compétition (ex: Ligue 1)")
+    venue_image = models.URLField(max_length=500, blank=True, verbose_name="Image du lieu")
     
     # Dates et heures
     start_time = models.DateTimeField(verbose_name="Début")
