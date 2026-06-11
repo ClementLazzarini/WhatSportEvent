@@ -1,0 +1,143 @@
+{% load static %}
+{% load tailwind_tags %}
+<!DOCTYPE html>
+<html class="dark" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>matchfinder - Carte des Événements</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+    
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" ... />
+    
+    {% tailwind_css %}
+    
+    <style>
+        #map { height: calc(100vh - 4rem); w-full; }
+        /* Style personnalisé pour rendre les popups Leaflet raccord avec le thème sombre */
+        .leaflet-popup-content-wrapper {
+            background: #201f21 !important;
+            color: #e5e1e4 !important;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 0.75rem;
+        }
+        .leaflet-popup-tip { background: #201f21 !important; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
+
+    <header class="bg-surface/80 backdrop-blur-md fixed top-0 w-full h-16 z-[1000] border-b border-white/5 shadow-sm">
+        <div class="flex justify-between items-center px-container-margin-desktop h-full w-full max-w-full mx-auto">
+            <a href="{% url 'home' %}" class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-2xl">speed</span>
+                <span class="font-headline-md font-bold tracking-tighter text-primary">matchfinder</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="{% url 'home' %}">Découvrir</a>
+                <a class="text-primary border-b-2 border-primary pb-1 font-body-md" href="{% url 'map' %}">Carte</a>
+                <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="#">Mes Matchs</a>
+            </nav>
+            <div class="w-10"></div>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-16 relative">
+        
+        <div class="absolute top-6 left-1/2 transform -translate-x-1/2 z-[1000] w-11/12 max-w-2xl">
+            <form id="map-filters" class="bg-surface/90 backdrop-blur-md border border-surface-bright rounded-full p-2 flex flex-col md:flex-row items-center justify-between shadow-2xl gap-2">
+                
+                <select name="sport" class="bg-transparent border-none text-on-surface font-label-bold focus:ring-0 cursor-pointer w-full md:w-1/2 appearance-none text-center" 
+                        hx-get="{% url 'map' %}" 
+                        hx-target="#map-data-container" 
+                        hx-include="#map-filters">
+                    <option value="" class="bg-surface text-on-surface">Tous les sports</option>
+                    {% for sport in sports %}
+                    <option value="{{ sport.slug }}" class="bg-surface text-on-surface" {% if search_sport == sport.slug %}selected{% endif %}>{{ sport.name }}</option>
+                    {% endfor %}
+                </select>
+                
+                <div class="hidden md:block w-px h-6 bg-white/10 mx-2"></div>
+                
+                <select name="date" class="bg-transparent border-none text-on-surface font-label-bold focus:ring-0 cursor-pointer w-full md:w-1/2 appearance-none text-center" 
+                        hx-get="{% url 'map' %}" 
+                        hx-target="#map-data-container" 
+                        hx-include="#map-filters">
+                    <option value="all" class="bg-surface text-on-surface" {% if search_date == 'all' %}selected{% endif %}>Toutes les dates</option>
+                    <option value="week" class="bg-surface text-on-surface" {% if search_date == 'week' %}selected{% endif %}>Prochains 7 jours</option>
+                    <option value="month" class="bg-surface text-on-surface" {% if search_date == 'month' %}selected{% endif %}>Ce mois-ci</option>
+                </select>
+            </form>
+        </div>
+
+        <div id="map" class="h-[calc(100vh-4rem)] w-full"></div>
+        
+        <div id="map-data-container"></div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script>
+        // 1. Initialisation de la carte (Centrée sur la France par défaut)
+        const map = L.map('map').setView([46.2276, 2.2137], 6);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+
+        // 2. On crée un groupe de calques pour pouvoir supprimer facilement les anciens points
+        let markerGroup = L.featureGroup().addTo(map);
+
+        // 3. La fonction magique appelée par HTMX pour mettre à jour la carte
+        function updateMapMarkers(events) {
+            // On vide les anciens marqueurs
+            markerGroup.clearLayers();
+
+            if (events.length === 0) {
+                return; // Rien à afficher
+            }
+
+            // On boucle sur nos événements filtrés pour créer les nouveaux marqueurs
+            events.forEach(event => {
+                const marker = L.marker([event.lat, event.lon]);
+                
+                const popupContent = `
+                    <div class="p-2 font-sans">
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <span class="text-xs uppercase font-bold tracking-wider text-primary">${event.sport}</span>
+                            <span class="text-xs text-on-surface-variant/70">• ${event.date}</span>
+                        </div>
+                        <h4 class="text-base font-bold text-on-surface leading-tight mb-2">${event.title}</h4>
+                        <p class="text-xs text-on-surface-variant flex items-center gap-1 mb-3">
+                            <span class="material-symbols-outlined text-sm">location_on</span> ${event.venue}
+                        </p>
+                        <a href="${event.url}" class="inline-block w-full text-center bg-primary text-black text-xs font-bold py-2 rounded transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                            Voir le match
+                        </a>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                markerGroup.addLayer(marker); // On ajoute le point au groupe
+            });
+
+            // On ajuste automatiquement le zoom pour voir tous les points !
+            map.fitBounds(markerGroup.getBounds().pad(0.1));
+        }
+
+        // 4. On lance l'affichage initial au chargement de la page
+        const initialEvents = {{ events_json|safe }};
+        updateMapMarkers(initialEvents);
+    </script>
+</body>
+</html>

@@ -29,6 +29,8 @@ class Event(models.Model):
     # Localisation
     venue_name = models.CharField(max_length=150, verbose_name="Nom du lieu (ex: Stade Ernest-Wallon)")
     city = models.CharField(max_length=100, default="Toulouse", verbose_name="Ville")
+    latitude = models.FloatField(null=True, blank=True, verbose_name="Latitude")
+    longitude = models.FloatField(null=True, blank=True, verbose_name="Longitude")
     
     # Infos pratiques
     price = models.CharField(max_length=50, blank=True, verbose_name="Prix", help_text="Ex: Gratuit, 10€, Prix libre")
