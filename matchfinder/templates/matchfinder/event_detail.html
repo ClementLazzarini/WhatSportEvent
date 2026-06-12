@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
     
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
     {% tailwind_css %}
 
     <style>
@@ -28,12 +30,12 @@
         </a>
         <div class="hidden md:flex items-center space-x-8">
             <a class="text-primary border-b-2 border-primary pb-1 font-body-md hover:text-primary transition-colors" href="{% url 'home' %}">Découvrir</a>
-            <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="#">Carte</a>
+            <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="{% url 'map' %}">Carte</a>
             <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="#">Mes Matchs</a>
         </div>
         <div class="flex items-center space-x-4">
             <a href="{% url 'home' %}" class="bg-surface-container text-on-surface px-6 py-2 rounded-full font-label-bold text-sm border border-white/10 hover:bg-white/5 transition-all">
-                &larr; Retour
+                ← Retour
             </a>
         </div>
     </nav>
@@ -55,7 +57,15 @@
 
             <div class="absolute bottom-8 left-container-margin-mobile md:left-container-margin-desktop z-10 max-w-3xl">
                 <div class="flex flex-wrap gap-2 mb-4">
-                    <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-label-bold text-[12px] uppercase tracking-wider border border-primary/20">{{ event.sport.name }}</span>
+                    <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-label-bold text-[12px] uppercase tracking-wider border border-primary/20 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[14px]">{{ event.sport.icon_class }}</span>
+                        {{ event.sport.name }}
+                    </span>
+                    {% if event.league_name %}
+                    <span class="bg-secondary-container/20 text-secondary-container px-3 py-1 rounded-full font-label-bold text-[12px] uppercase tracking-wider border border-secondary-container/30">
+                        {{ event.league_name }}
+                    </span>
+                    {% endif %}
                 </div>
                 <h1 class="font-headline-xl text-[32px] md:text-[48px] font-extrabold text-on-surface mb-2 drop-shadow-md">{{ event.title }}</h1>
                 <p class="font-body-lg text-[18px] text-on-surface-variant flex items-center gap-2">
@@ -104,15 +114,19 @@
                     <div>
                         <h3 class="font-headline-md text-[24px] font-bold text-on-surface mb-4">Localisation</h3>
                         <div class="bg-surface-container rounded-xl overflow-hidden border border-white/5 group relative">
-                            <div class="w-full h-64 bg-surface-container-high relative overflow-hidden">
+                            <div id="event-map" class="w-full h-64 bg-surface-container-high relative overflow-hidden z-0">
+                                {% if not event.latitude or not event.longitude %}
                                 <div class="absolute inset-0 bg-surface-container-highest opacity-50"></div>
                                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(184,195,255,0.3)] animate-pulse">
-                                        <span class="material-symbols-outlined text-on-primary icon-fill">stadium</span>
+                                    <div class="w-12 h-12 bg-surface-bright rounded-full flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-on-surface-variant icon-fill">location_off</span>
                                     </div>
+                                    <p class="text-on-surface-variant text-sm mt-2 font-label-bold">Coordonnées indisponibles</p>
                                 </div>
+                                {% endif %}
                             </div>
-                            <div class="p-4 flex justify-between items-center bg-surface-container">
+                            
+                            <div class="p-4 flex justify-between items-center bg-surface-container relative z-10">
                                 <div>
                                     <p class="font-body-md text-on-surface font-semibold">{{ event.venue_name }}</p>
                                     <p class="font-label-md text-on-surface-variant">{{ event.city }}</p>
@@ -164,5 +178,45 @@
             </div>
         </div>
     </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script>
+        {% if event.latitude and event.longitude %}
+        document.addEventListener("DOMContentLoaded", function() {
+            // Remplacement des virgules par des points pour être sûr que JS comprenne les coordonnées
+            const lat = parseFloat("{{ event.latitude }}".replace(',', '.'));
+            const lon = parseFloat("{{ event.longitude }}".replace(',', '.'));
+            
+            // On initialise la carte en désactivant le zoom à la molette pour ne pas gêner le défilement de la page
+            const map = L.map('event-map', {
+                scrollWheelZoom: false,
+                dragging: !L.Browser.mobile // Désactive le glissement sur mobile pour faciliter le scroll
+            }).setView([lat, lon], 14);
+
+            // Couche de tuiles sombres CARTO pour respecter ton design
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // On crée un marqueur HTML ultra personnalisé qui reprend ton animation 'pulse'
+            const customIcon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(184,195,255,0.4)] border-2 border-surface-container relative">
+                        <span class="material-symbols-outlined text-on-primary icon-fill text-[20px] relative z-10">{{ event.sport.icon_class|default:'stadium' }}</span>
+                        <div class="absolute inset-0 bg-primary rounded-full animate-ping opacity-30"></div>
+                    </div>
+                `,
+                iconSize: [40, 40],
+                iconAnchor: [20, 20] // Pour centrer le picto exactement sur la coordonnée
+            });
+
+            L.marker([lat, lon], {icon: customIcon}).addTo(map);
+        });
+        {% endif %}
+    </script>
 </body>
 </html>
