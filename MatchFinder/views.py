@@ -3,6 +3,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.core.paginator import Paginator
 from datetime import timedelta
 from .models import Event, Sport
 
@@ -28,11 +29,14 @@ def home_view(request):
     
     leagues = Event.objects.exclude(league_name='').values_list('league_name', flat=True).distinct().order_by('league_name')
 
-    events = events[:12]
+    paginator = Paginator(events, 12) # 12 matchs par page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
     
     # 4. On passe tout au contexte
     context = {
-        'events': events,
+        'events': page_obj.object_list,
+        'page_obj': page_obj,
         'search_city': search_city,
         'search_sport': search_sport,
         'search_league': search_league,
