@@ -17,6 +17,18 @@
     <style>
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .icon-fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+        /* CSS pour les Loaders HTMX */
+        .htmx-indicator { display: none; }
+        .htmx-request .htmx-indicator { display: flex; }
+        .htmx-request.htmx-indicator { display: flex; }
+        
+        /* Effet de transparence sur la grille pendant une recherche */
+        .grid-loading.htmx-request {
+            opacity: 0.3;
+            pointer-events: none;
+            transition: opacity 0.2s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-background text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary/30">
@@ -47,7 +59,7 @@
 
     <main class="flex-grow pt-16">
         
-        <form id="search-form">
+        <form id="search-form" hx-indicator="#page-loader, #event-results">
             
             <section class="relative w-full min-h-[500px] flex items-center justify-center overflow-hidden">
                 <div class="absolute inset-0 w-full h-full bg-surface-container-highest" style="background-image: url('https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); background-size: cover; background-position: center;"></div>
@@ -128,8 +140,13 @@
                 </div>
             </div>
             
-            <div id="event-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="event-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 grid-loading">
                 {% include 'matchfinder/partials/event_list.html' %}
+            </div>
+            
+            <div id="page-loader" class="htmx-indicator w-full justify-center items-center py-12 flex-col gap-3">
+                <span class="material-symbols-outlined text-primary text-5xl animate-spin">progress_activity</span>
+                <span class="font-label-bold text-on-surface-variant animate-pulse">Recherche des matchs...</span>
             </div>
         </section>
 
