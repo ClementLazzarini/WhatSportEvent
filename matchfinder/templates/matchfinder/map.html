@@ -35,18 +35,47 @@
 </head>
 <body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
 
-    <header class="bg-surface/80 backdrop-blur-md fixed top-0 w-full h-16 z-[1000] border-b border-white/5 shadow-sm">
-        <div class="flex justify-between items-center px-container-margin-desktop h-full w-full max-w-full mx-auto">
-            <a href="{% url 'home' %}" class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary text-2xl">speed</span>
-                <span class="font-headline-md font-bold tracking-tighter text-primary">matchfinder</span>
+    <header class="bg-surface/80 backdrop-blur-md fixed top-0 w-full h-16 z-[1000] border-b border-white/5 shadow-sm transition-all duration-300">
+        <div class="flex justify-between items-center px-container-margin-mobile md:px-container-margin-desktop h-full w-full max-w-full mx-auto">
+            
+            <a href="{% url 'home' %}" class="flex items-center gap-2 hover:scale-[0.98] hover:opacity-90 transition-all duration-200 group">
+                <div class="bg-primary/10 p-1.5 rounded-lg group-hover:bg-primary/20 transition-colors">
+                    <span class="material-symbols-outlined icon-fill text-primary text-xl">speed</span>
+                </div>
+                <span class="font-headline-md font-extrabold tracking-tighter text-primary">matchfinder</span>
             </a>
+            
             <nav class="hidden md:flex items-center gap-8">
-                <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="{% url 'home' %}">Découvrir</a>
-                <a class="text-primary border-b-2 border-primary pb-1 font-body-md" href="{% url 'map' %}">Carte</a>
-                <a class="text-on-surface/70 font-body-md hover:text-primary transition-colors" href="#">Mes Matchs</a>
+                <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200 relative group" href="{% url 'home' %}">
+                    Découvrir
+                    <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
+                </a>
+                
+                <a class="text-primary font-body-md font-semibold relative" href="{% url 'map' %}">
+                    Carte
+                    <span class="absolute -bottom-1 left-0 w-full h-[2px] bg-primary rounded-full shadow-[0_0_10px_rgba(46,91,255,0.5)]"></span>
+                </a>
+                
+                <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200 relative group" href="#">
+                    Mes Matchs
+                    <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
+                </a>
             </nav>
-            <div class="w-10"></div>
+            
+            <div class="flex items-center gap-2 md:gap-4">
+                <button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors duration-200">
+                    <span class="material-symbols-outlined icon-fill text-[22px]">person</span>
+                </button>
+                
+                <button class="hidden md:flex bg-secondary-container text-white px-6 py-2 rounded-full font-label-bold text-sm shadow-lg shadow-secondary-container/20 hover:scale-105 hover:shadow-secondary-container/40 transition-all active:scale-95">
+                    Connexion
+                </button>
+
+                <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-full text-on-surface hover:bg-white/5 transition-colors">
+                    <span class="material-symbols-outlined text-[24px]">menu</span>
+                </button>
+            </div>
+            
         </div>
     </header>
 
