@@ -45,33 +45,30 @@
                 <span class="font-headline-md font-extrabold tracking-tighter text-primary">matchfinder</span>
             </a>
             
-            <nav class="hidden md:flex items-center gap-8">
-                <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200 relative group" href="{% url 'home' %}">
+            <nav class="hidden md:flex items-center gap-1 bg-surface-container-high/50 p-1 rounded-full border border-white/5">
+                <a class="px-5 py-1.5 rounded-full text-on-surface-variant font-body-md hover:text-on-surface hover:bg-white/10 transition-all duration-200" href="{% url 'home' %}">
                     Découvrir
-                    <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
                 </a>
                 
-                <a class="text-primary font-body-md font-semibold relative" href="{% url 'map' %}">
+                <a class="px-5 py-1.5 rounded-full bg-primary/10 text-primary font-body-md font-semibold shadow-sm" href="{% url 'map' %}">
                     Carte
-                    <span class="absolute -bottom-1 left-0 w-full h-[2px] bg-primary rounded-full shadow-[0_0_10px_rgba(46,91,255,0.5)]"></span>
                 </a>
                 
-                <a class="text-on-surface-variant font-body-md hover:text-primary transition-colors duration-200 relative group" href="#">
+                <a class="px-5 py-1.5 rounded-full text-on-surface-variant font-body-md hover:text-on-surface hover:bg-white/10 transition-all duration-200" href="#">
                     Mes Matchs
-                    <span class="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full rounded-full"></span>
                 </a>
             </nav>
             
-            <div class="flex items-center gap-2 md:gap-4">
-                <button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors duration-200">
-                    <span class="material-symbols-outlined icon-fill text-[22px]">person</span>
+            <div class="flex items-center gap-3">
+                <button class="w-9 h-9 flex items-center justify-center rounded-full bg-surface-container border border-white/10 text-on-surface-variant hover:text-primary hover:border-primary/30 transition-all duration-200 group">
+                    <span class="material-symbols-outlined icon-fill text-[20px] group-hover:scale-110 transition-transform">person</span>
                 </button>
                 
-                <button class="hidden md:flex bg-secondary-container text-white px-6 py-2 rounded-full font-label-bold text-sm shadow-lg shadow-secondary-container/20 hover:scale-105 hover:shadow-secondary-container/40 transition-all active:scale-95">
+                <button class="hidden md:flex bg-secondary-container text-white px-5 py-2 rounded-full font-label-bold text-sm shadow-lg shadow-secondary-container/20 hover:scale-105 hover:shadow-secondary-container/40 ring-2 ring-transparent hover:ring-secondary-container/30 ring-offset-2 ring-offset-background transition-all active:scale-95">
                     Connexion
                 </button>
 
-                <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-full text-on-surface hover:bg-white/5 transition-colors">
+                <button class="md:hidden w-10 h-10 flex items-center justify-center rounded-full text-on-surface hover:bg-white/10 transition-colors">
                     <span class="material-symbols-outlined text-[24px]">menu</span>
                 </button>
             </div>

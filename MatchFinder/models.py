@@ -6,6 +6,7 @@ class Sport(models.Model):
     slug = models.SlugField(max_length=50, unique=True, blank=True)
     icon_class = models.CharField(max_length=50, blank=True, help_text="Classe CSS pour l'icône (ex: fa-futbol)")
 
+
     class Meta:
         verbose_name = "Sport"
         verbose_name_plural = "Sports"
