@@ -29,6 +29,22 @@
             pointer-events: none;
             transition: opacity 0.2s ease-in-out;
         }
+
+        /* Animation du gradient textuel */
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-hero-gradient {
+            background-size: 200% auto;
+            animation: textGradient 6s linear infinite;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(46, 91, 255, 0.8); }
     </style>
 </head>
 <body class="bg-background text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary/30">
@@ -66,7 +82,12 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
                 
                 <div class="relative z-10 w-full max-w-5xl px-container-margin-mobile md:px-container-margin-desktop flex flex-col items-center text-center mt-16">
-                    <h1 class="font-headline-xl text-[40px] md:text-[56px] text-on-surface mb-6 drop-shadow-lg leading-tight">Vivez le sport<br><span class="text-primary">en direct.</span></h1>
+                    <h1 class="font-headline-xl text-[40px] md:text-[56px] text-on-surface mb-6 drop-shadow-lg leading-tight font-extrabold tracking-tight">
+                        Vivez le sport<br>
+                        <span class="bg-gradient-to-r from-primary via-orange-500 to-blue-500 bg-clip-text text-transparent animate-hero-gradient">
+                            en direct.
+                        </span>
+                    </h1>
                     <p class="font-body-lg text-on-surface-variant max-w-2xl mb-12">Découvrez les matchs, tournois locaux et événements sportifs qui se déroulent autour de vous.</p>
                     
                     <div class="w-full max-w-xl bg-surface-container/90 backdrop-blur-md rounded-full p-2 flex flex-col md:flex-row items-center border border-surface-bright shadow-[0_0_30px_rgba(46,91,255,0.15)] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
