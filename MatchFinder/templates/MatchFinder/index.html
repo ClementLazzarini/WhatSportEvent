@@ -76,82 +76,90 @@
     <main class="flex-grow pt-16">
         
         <form id="search-form" hx-indicator="#page-loader, #event-results">
+    
+    <section class="relative w-full min-h-[500px] flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 w-full h-full bg-surface-container-highest" style="background-image: url('https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); background-size: cover; background-position: center;"></div>
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30"></div>
+        
+        <div class="relative z-10 w-full max-w-5xl px-container-margin-mobile md:px-container-margin-desktop flex flex-col items-center text-center mt-16">
+            <h1 class="font-headline-xl text-[40px] md:text-[56px] text-on-surface mb-6 drop-shadow-lg leading-tight font-extrabold tracking-tight">
+                Vivez le sport<br>
+                <span class="bg-gradient-to-r from-primary via-orange-500 to-blue-500 bg-clip-text text-transparent animate-hero-gradient">
+                    en direct.
+                </span>
+            </h1>
+            <p class="font-body-lg text-on-surface-variant max-w-2xl mb-12 text-shadow-sm">Découvrez les matchs, tournois locaux et événements sportifs qui se déroulent autour de vous.</p>
             
-            <section class="relative w-full min-h-[500px] flex items-center justify-center overflow-hidden">
-                <div class="absolute inset-0 w-full h-full bg-surface-container-highest" style="background-image: url('https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'); background-size: cover; background-position: center;"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+            <div class="w-full max-w-xl group relative z-30">
+                <div class="absolute -inset-1 bg-gradient-to-r from-primary to-blue-500 rounded-full blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
                 
-                <div class="relative z-10 w-full max-w-5xl px-container-margin-mobile md:px-container-margin-desktop flex flex-col items-center text-center mt-16">
-                    <h1 class="font-headline-xl text-[40px] md:text-[56px] text-on-surface mb-6 drop-shadow-lg leading-tight font-extrabold tracking-tight">
-                        Vivez le sport<br>
-                        <span class="bg-gradient-to-r from-primary via-orange-500 to-blue-500 bg-clip-text text-transparent animate-hero-gradient">
-                            en direct.
-                        </span>
-                    </h1>
-                    <p class="font-body-lg text-on-surface-variant max-w-2xl mb-12">Découvrez les matchs, tournois locaux et événements sportifs qui se déroulent autour de vous.</p>
-                    
-                    <div class="w-full max-w-xl bg-surface-container/90 backdrop-blur-md rounded-full p-2 flex flex-col md:flex-row items-center border border-surface-bright shadow-[0_0_30px_rgba(46,91,255,0.15)] focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
-                        <div class="flex-grow flex items-center px-4 w-full h-12">
-                            <span class="material-symbols-outlined text-primary mr-3">location_on</span>
-                            <input 
-                                type="text" 
-                                name="city" 
-                                value="{{ search_city }}"
-                                hx-get="{% url 'home' %}"
-                                hx-target="#event-results"
-                                hx-trigger="keyup changed delay:500ms, search"
-                                hx-include="#search-form"
-                                class="w-full bg-transparent border-none text-on-surface font-body-md focus:ring-0 focus:outline-none placeholder:text-on-surface-variant/50" 
-                                placeholder="Dans quelle ville cherchez-vous ? (ex: Toulouse)"
-                            />
+                <div class="relative w-full bg-surface/80 backdrop-blur-xl rounded-full p-1.5 flex flex-col md:flex-row items-center border border-white/10 transition-all">
+                    <div class="flex-grow flex items-center px-4 w-full h-12">
+                        <span class="material-symbols-outlined text-on-surface-variant group-focus-within:text-primary transition-colors duration-300 mr-3">location_on</span>
+                        <input 
+                            type="text" 
+                            name="city" 
+                            value="{{ search_city }}"
+                            hx-get="{% url 'home' %}"
+                            hx-target="#event-results"
+                            hx-trigger="keyup changed delay:500ms, search"
+                            hx-include="#search-form"
+                            class="w-full bg-transparent border-none text-on-surface font-body-lg focus:ring-0 focus:outline-none placeholder:text-on-surface-variant/50" 
+                            placeholder="Dans quelle ville cherchez-vous ? (ex: Toulouse)"
+                        />
+                        <div class="hidden md:flex items-center justify-center bg-surface-container px-2 py-1 rounded border border-white/10 text-on-surface-variant text-xs font-label-bold ml-2">
+                            ↵
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </div>
+    </section>
 
-            <section class="py-8 px-container-margin-mobile md:px-container-margin-desktop max-w-7xl mx-auto border-b border-surface-container-low flex flex-col gap-6">
-                
-                <div class="flex flex-wrap items-center justify-center gap-4">
-                    <label class="cursor-pointer">
-                        <input type="radio" name="sport" value="" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if not search_sport %}checked{% endif %}>
-                        <div class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-surface-bright bg-surface-container text-on-surface-variant peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary/20 hover:bg-surface-bright transition-colors">
-                            <span class="font-label-bold uppercase">Tous les sports</span>
-                        </div>
-                    </label>
-
-                    {% for sport in sports %}
-                    <label class="cursor-pointer">
-                        <input type="radio" name="sport" value="{{ sport.slug }}" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if search_sport == sport.slug %}checked{% endif %}>
-                        <div class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-surface-bright bg-surface-container text-on-surface-variant peer-checked:bg-primary/10 peer-checked:text-primary peer-checked:border-primary/20 hover:bg-surface-bright transition-colors">
-                            <span class="material-symbols-outlined text-[20px]">{{ sport.icon_class }}</span>
-                            <span class="font-label-bold uppercase">{{ sport.name }}</span>
-                        </div>
-                    </label>
-                    {% endfor %}
+    <section class="py-8 px-container-margin-mobile md:px-container-margin-desktop max-w-7xl mx-auto border-b border-surface-container-low flex flex-col gap-6 relative z-20">
+        
+        <div class="flex flex-wrap items-center justify-center gap-4">
+            <label class="cursor-pointer group">
+                <input type="radio" name="sport" value="" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if not search_sport %}checked{% endif %}>
+                <div class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/5 bg-surface-container/50 backdrop-blur-sm text-on-surface-variant peer-checked:bg-primary/20 peer-checked:text-primary peer-checked:border-primary/30 peer-checked:shadow-[0_0_15px_rgba(46,91,255,0.2)] hover:bg-surface-bright hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+                    <span class="font-label-bold uppercase">Tous les sports</span>
                 </div>
+            </label>
 
-                {% if leagues %}
-                <div class="flex flex-wrap items-center justify-center gap-3">
-                    
-                    <label class="cursor-pointer">
-                        <input type="radio" name="league" value="" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if not search_league %}checked{% endif %}>
-                        <div class="px-4 py-1.5 rounded-full border border-surface-bright bg-surface-container-high text-on-surface-variant text-sm peer-checked:bg-secondary-container/20 peer-checked:text-secondary-container peer-checked:border-secondary-container/30 hover:bg-surface-bright transition-colors">
-                            <span class="font-label-bold">Toutes compétitions</span>
-                        </div>
-                    </label>
-
-                    {% for league in leagues %}
-                    <label class="cursor-pointer">
-                        <input type="radio" name="league" value="{{ league }}" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if search_league == league %}checked{% endif %}>
-                        <div class="px-4 py-1.5 rounded-full border border-surface-bright bg-surface-container-high text-on-surface-variant text-sm peer-checked:bg-secondary-container/20 peer-checked:text-secondary-container peer-checked:border-secondary-container/30 hover:bg-surface-bright transition-colors">
-                            <span class="font-label-bold">{{ league }}</span>
-                        </div>
-                    </label>
-                    {% endfor %}
+            {% for sport in sports %}
+            <label class="cursor-pointer group">
+                <input type="radio" name="sport" value="{{ sport.slug }}" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if search_sport == sport.slug %}checked{% endif %}>
+                <div class="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/5 bg-surface-container/50 backdrop-blur-sm text-on-surface-variant peer-checked:bg-primary/20 peer-checked:text-primary peer-checked:border-primary/30 peer-checked:shadow-[0_0_15px_rgba(46,91,255,0.2)] hover:bg-surface-bright hover:-translate-y-0.5 hover:shadow-lg transition-all duration-300">
+                    <span class="material-symbols-outlined text-[20px]">{{ sport.icon_class }}</span>
+                    <span class="font-label-bold uppercase">{{ sport.name }}</span>
                 </div>
-                {% endif %}
-            </section>
-        </form>
+            </label>
+            {% endfor %}
+        </div>
+
+        {% if leagues %}
+        <div class="flex flex-wrap items-center justify-center gap-3 mt-2">
+            
+            <label class="cursor-pointer group">
+                <input type="radio" name="league" value="" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if not search_league %}checked{% endif %}>
+                <div class="px-4 py-1.5 rounded-full border border-white/5 bg-surface-container-high/50 backdrop-blur-sm text-on-surface-variant text-sm peer-checked:bg-secondary-container/30 peer-checked:text-secondary-container peer-checked:border-secondary-container/40 hover:bg-surface-bright hover:-translate-y-0.5 transition-all duration-300">
+                    <span class="font-label-bold">Toutes compétitions</span>
+                </div>
+            </label>
+
+            {% for league in leagues %}
+            <label class="cursor-pointer group">
+                <input type="radio" name="league" value="{{ league }}" class="peer hidden" hx-get="{% url 'home' %}" hx-target="#event-results" hx-include="#search-form" {% if search_league == league %}checked{% endif %}>
+                <div class="px-4 py-1.5 rounded-full border border-white/5 bg-surface-container-high/50 backdrop-blur-sm text-on-surface-variant text-sm peer-checked:bg-secondary-container/30 peer-checked:text-secondary-container peer-checked:border-secondary-container/40 hover:bg-surface-bright hover:-translate-y-0.5 transition-all duration-300">
+                    <span class="font-label-bold">{{ league }}</span>
+                </div>
+            </label>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+</form>
 
         <section class="py-16 px-container-margin-mobile md:px-container-margin-desktop max-w-7xl mx-auto">
             <div class="flex justify-between items-end mb-8">
