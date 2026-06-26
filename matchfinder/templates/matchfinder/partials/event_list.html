@@ -1,49 +1,67 @@
 {% for event in events %}
 <a href="{% url 'event_detail' event.id %}" 
-   class="group relative rounded-xl overflow-hidden bg-surface-container border border-white/5 hover:border-primary/50 transition-all duration-300 flex flex-col justify-between h-[280px] sm:h-[300px] md:h-[320px] shadow-lg p-5"
+   class="group relative rounded-2xl overflow-hidden bg-surface-container border border-white/5 hover:border-primary/40 hover:shadow-[0_8px_30px_rgba(46,91,255,0.15)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-[320px] sm:h-[340px]"
    {% if forloop.last and page_obj.has_next %}
    hx-get="{% url 'home' %}?page={{ page_obj.next_page_number }}"
    hx-trigger="revealed"
    hx-swap="afterend"
    hx-include="#search-form"
-   indicator="#page-loader"
+   hx-indicator="#page-loader"
    {% endif %}>
     
     <img alt="{{ event.venue_name }}" 
-         class="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-105 transition-transform duration-700" 
+         class="absolute inset-0 w-full h-full object-cover z-0 group-hover:scale-110 transition-transform duration-700 ease-out" 
          src="{{ event.venue_image }}"
          onerror="this.onerror=null; this.src='{% if event.sport.name == 'Football' %}https://images.unsplash.com/photo-1518605368461-1ee7c5320b22?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80{% elif event.sport.name == 'Rugby' %}https://images.unsplash.com/photo-1589201174354-9781b0a8eb1b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80{% else %}https://images.unsplash.com/photo-1505666287802-931dc83948e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80{% endif %}';"/>
     
-    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent opacity-90 group-hover:opacity-100 transition-opacity z-0"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-background/40 to-background/95 group-hover:to-background transition-colors z-0"></div>
 
-    <div class="relative z-10 flex justify-between items-start gap-2">
-        <div class="bg-surface/80 backdrop-blur-md px-3 py-1.5 rounded border border-white/10 shrink-0 flex items-center gap-1.5 text-primary">
-                <span class="material-symbols-outlined text-[16px]">{{ event.sport.icon_class }}</span>
-                <span class="font-label-bold text-xs uppercase tracking-wider">{{ event.sport.name }}</span>
+    <div class="relative z-10 flex justify-between items-start gap-2 p-4">
+        <div class="flex flex-col gap-2 items-start">
+            <div class="bg-surface/80 backdrop-blur-md px-2.5 py-1 rounded-md border border-white/10 flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[14px] text-primary">{{ event.sport.icon_class }}</span>
+                <span class="font-label-bold text-[10px] text-on-surface uppercase tracking-wider">{{ event.sport.name }}</span>
             </div>
-        {% if event.league_name %}
-        <div class="bg-surface/80 backdrop-blur-md px-3 py-1.5 rounded border border-white/10 shrink-0">
-            <span class="font-label-bold text-xs text-secondary-container uppercase tracking-wider">{{ event.league_name }}</span>
+            {% if event.league_name %}
+            <div class="bg-secondary-container/90 backdrop-blur-md px-2.5 py-1 rounded-md border border-secondary-container/50 shadow-sm">
+                <span class="font-label-bold text-[10px] text-white uppercase tracking-wider">{{ event.league_name }}</span>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
-        <div class="bg-surface/80 backdrop-blur-md px-3 py-1.5 rounded border border-white/10 shrink-0">
-            <span class="font-label-bold text-xs text-on-surface uppercase">{{ event.start_time|date:"d M, H:i" }}</span>
+        
+        <div class="bg-surface/90 backdrop-blur-md border border-white/10 rounded-lg flex flex-col items-center justify-center min-w-[48px] py-1.5 shadow-lg group-hover:border-primary/50 transition-colors">
+            <span class="font-label-bold text-primary uppercase text-[10px] tracking-wider leading-none mb-1">{{ event.start_time|date:"M" }}</span>
+            <span class="font-headline-md text-lg text-on-surface font-bold leading-none">{{ event.start_time|date:"d" }}</span>
         </div>
     </div>
 
-    <div class="relative z-10 mt-auto pt-4">
-        <h3 class="font-headline-md text-xl md:text-2xl font-bold text-on-surface leading-tight mb-3 group-hover:text-primary transition-colors line-clamp-2" title="{{ event.title }}">
+    <div class="relative z-10 mt-auto p-4 flex flex-col justify-end">
+        <p class="text-xs text-primary font-label-bold mb-2 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">schedule</span>
+            {{ event.start_time|date:"H:i" }}
+        </p>
+        
+        <h3 class="font-headline-md text-xl font-bold text-on-surface leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2" title="{{ event.title }}">
             {{ event.title }}
         </h3>
         
-        <div class="flex items-center justify-between gap-3">
-            <p class="font-body-md text-sm text-on-surface-variant flex items-center gap-1.5 truncate">
-                <span class="material-symbols-outlined text-[18px] shrink-0">location_on</span>
-                <span class="truncate">{{ event.city }}</span>
-            </p>
-            <p class="font-label-bold text-sm text-on-surface bg-surface-bright/50 px-2 py-1 rounded shrink-0">
-                {{ event.price }}
-            </p>
+        <div class="flex items-end justify-between gap-3 mt-1">
+            <div class="flex flex-col overflow-hidden">
+                <p class="font-body-md text-sm text-on-surface-variant flex items-center gap-1.5 truncate">
+                    <span class="material-symbols-outlined text-[16px] shrink-0">location_on</span>
+                    <span class="truncate">{{ event.city }}</span>
+                </p>
+                <p class="font-body-sm text-xs text-on-surface-variant/60 truncate ml-[22px] mt-0.5">
+                    {{ event.venue_name }}
+                </p>
+            </div>
+            
+            <div class="flex items-center gap-1.5 bg-surface-container-high/80 backdrop-blur-sm px-2.5 py-1.5 rounded border border-white/5 shrink-0 group-hover:bg-primary/20 group-hover:border-primary/30 transition-colors">
+                <span class="font-label-bold text-sm text-on-surface group-hover:text-primary transition-colors">
+                    {{ event.price }}
+                </span>
+                <span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:text-primary transition-colors transform group-hover:translate-x-1 duration-300">arrow_forward</span>
+            </div>
         </div>
     </div>
 </a>
